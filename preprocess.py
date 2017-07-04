@@ -132,6 +132,8 @@ def parse_sentence(pd_data,target_file):
     pd_data['parse'] = pd_data['sentence'].apply(sp.getAllConstituents)
     print(pd_data)
 
+    print("test")
+
     # 写入文件中
     if target_file:
         pd_data.to_csv(target_file, encoding='utf8')
