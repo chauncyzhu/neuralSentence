@@ -2,10 +2,10 @@
 """
     对数据集进行初步的统计
 """
+import gensim
 import stanford_parser as sp
 import pandas as pd
 import utils.data_path as path
-
 
 def read_dataset_split(filename):
     """
@@ -139,8 +139,59 @@ def parse_sentence(pd_data,target_file):
         pd_data.to_csv(target_file, encoding='utf8')
 
 
+def read_csv_data(file_name):
+    """
+    读取parse_sentence后的数据文件
+    :param file_name:csv文件名
+    :return:
+    """
+    pd_data = pd.read_csv(path.TARGET_CSV, encoding="utf8")
+    pd_data['sentiment_label'] = pd_data['sentiment_label'].apply(eval)
+    pd_data['parse'] = pd_data['parse'].apply(eval)
+
+    return pd_data
+
+def embedding_matrix(file_name,word2vec_file_name,target_file_name = None):
+    """
+    获取词典以及对应的词向量
+    :param file_name: 从csv中加载已经解析好的文件数据
+    :param word2vec_file_name: 需要加载的word2vec文件
+    :param target_file_name:需要写入的文件
+    :return:
+    """
+    pd_data = read_csv_data(file_name)  #
+    model = gensim.models.KeyedVectors.load_word2vec_format(word2vec_file_name, binary=True)
+
+    vocab = model.vocab.keys()
+    print("word2vec has "+str(len(vocab))+" words")
+
+    word_vec_dic = {}
+
+    for index,row in pd_data.iterrows():
+        print("now index is---",index)
+        for word_pos in row['parse']:
+            if word_pos[0] not in vocab:  #如果word不在word2vec中，则必定不在词典中
+                print("word not in word2vec")
+                word_vec_dic[word_pos[0]] = None
+            else:
+                if word_pos[0] not in word_vec_dic.keys():
+                    word_vec_dic[word_pos[0]] = np.array([model.word_vec(word_pos[0])])
+
+    # 将词典转为pandas_dataframe
+    pd_dict = pd.DataFrame.from_dict(word_vec_dic,orient="index")
+    pd_dict.columns = ['vector']
+    print("pd dict is ----",pd_dict)
+
+    if target_file_name:
+        pd_dict.to_csv(target_file_name,encoding="utf8")
+
+    return pd_dict
+
 if __name__ == '__main__':
-    parse_sentence(get_train_test_data(),path.TARGET_CSV)
+    # parse_sentence(get_train_test_data(),path.TARGET_CSV)
+
+    embedding_matrix(path.TARGET_CSV,path.WORD2VEC_BIN,path.WORD2VEC_DICT)
+
 
 
 """
