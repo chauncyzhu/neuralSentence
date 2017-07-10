@@ -18,3 +18,10 @@ JAVA_PATH = "C:/Program Files/Java/jdk1.8.0_121/bin/java.exe"
 STANFORD_PARSER = STANFORD_PATH + "stanford-parser.jar"
 STANFORD_MODELS = STANFORD_PATH + "stanford-parser-3.7.0-models.jar"
 ENGLISHPCFG = STANFORD_PATH + "englishPCFG.ser.gz"
+
+# 预训练的word2vec词向量
+WORD2VEC_BIN = "D:/Data/pretrained_vec/GNv_NS300d.bin"
+
+#词典文件
+WORD2VEC_DICT = ROOT_PATH + "word2vec_dict.csv"
+
