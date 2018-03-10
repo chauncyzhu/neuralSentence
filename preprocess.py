@@ -88,7 +88,7 @@ def read_sentiment_labels(filename):
     return diction
 
 
-def get_train_test_data():
+def get_train_dev_data():
     pd_data = pd.DataFrame(columns=['id','dataset_label','sentence','sentiment_label'])
 
     dataset_split = read_dataset_split(path.DATASET_SPLIT)
@@ -188,7 +188,7 @@ def embedding_matrix(file_name,word2vec_file_name,target_file_name = None):
     return pd_dict
 
 if __name__ == '__main__':
-    # parse_sentence(get_train_test_data(),path.TARGET_CSV)
+    # parse_sentence(get_train_dev_data(),path.TARGET_CSV)
 
     embedding_matrix(path.TARGET_CSV,path.WORD2VEC_BIN,path.WORD2VEC_DICT)
 
